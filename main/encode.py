@@ -7,9 +7,6 @@ def display(image):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-def encrypt_message(message):
-    return
-
 def read_bytes(b_msg):
     rtn = ''
     for byte in b_msg:
@@ -42,7 +39,6 @@ def bit_insert(image, bits, dim):
 
     rtn = np.copy(image)
     
-    # Note: our implementation here will impact how we get our message out of the image
     if dim == 3:
         # go by x, y, then color
         for color in range(image.shape[2]):
@@ -62,11 +58,24 @@ def bit_insert(image, bits, dim):
                 if b_i >= len(bits):
                     return rtn
 
-def decrypt(image):
+def decrypt(image, msg_len):
+    bits = bit_extract(image, msg_len)
+
+    b_list = []
+
+    for i in range(0, len(bits), 8):
+        res = int(''.join(map(str, bits[i:i+8])), 2)
+        b_list.append(res)
+
+    return b_list
+
+def bit_extract(image, msg_len):
     dim = len(image.shape)
 
     bits = []
     mask = 0b00000001
+
+    b_count = 0
     
     if dim == 3:
         # go by x, y, then color
@@ -74,35 +83,41 @@ def decrypt(image):
             for x in range(image.shape[0]):
                 for y in range(image.shape[1]):
                     bits.append(image[y, x, color] & mask)
+                    b_count += 1
+                    if b_count >= msg_len*8:
+                        return bits
     else:
         for x in range(image.shape[0]):
             for y in range(image.shape[1]):
                 bits.append(image[y, x, color])
-
-    b_list = []
+                b_count += 1
+                if b_count >= msg_len*8:
+                    return bits
                 
-    for i in range(0, len(bits), 8):
-        # TODO: dont take bytes past message length
-        res = int(''.join(map(str, bits[i:i+8])), 2)
-        b_list.append(res)
-        
-    return b_list
-    
 def main():
     # code pictures here
     # image = cv2.imread('img.png', cv2.IMREAD_GRAYSCALE)
     image = cv2.imread('img.png')
-    display(image)
 
-    test_mess = b'hello'
-    
-    secret = hide(image, test_mess)
+    while True:
+        # test_msg = b'hello'
 
-    display(secret)
+        test_msg = input('Hello! Please enter data you would like to store in the image.\n').encode()
 
-    b_msg = decrypt(secret)
+        try:
+            secret = hide(image, test_msg)
 
-    print(read_bytes(b_msg))
-    
+            display(image)
+            display(secret)
+        
+            b_msg = decrypt(secret, len(test_msg))
+            msg = read_bytes(b_msg)
+            
+            print('\n{}'.format(msg))
+            break
+        except ValueError:
+            print("\nSorry, please use a bigger image or store a smaller message.\n\n")
+            continue
+            
 if __name__ == "__main__":
     main()
