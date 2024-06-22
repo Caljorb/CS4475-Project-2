@@ -10,6 +10,13 @@ def display(image):
 def encrypt_message(message):
     return
 
+def read_bytes(b_msg):
+    rtn = ''
+    for byte in b_msg:
+        rtn += chr(byte)
+
+    return rtn
+
 def hide(image, b_message):
     dim = len(image.shape)
 
@@ -55,8 +62,31 @@ def bit_insert(image, bits, dim):
                 if b_i >= len(bits):
                     return rtn
 
-def decrypt(mes_img, key_img):
-    return
+def decrypt(image):
+    dim = len(image.shape)
+
+    bits = []
+    mask = 0b00000001
+    
+    if dim == 3:
+        # go by x, y, then color
+        for color in range(image.shape[2]):
+            for x in range(image.shape[0]):
+                for y in range(image.shape[1]):
+                    bits.append(image[y, x, color] & mask)
+    else:
+        for x in range(image.shape[0]):
+            for y in range(image.shape[1]):
+                bits.append(image[y, x, color])
+
+    b_list = []
+                
+    for i in range(0, len(bits), 8):
+        # TODO: dont take bytes past message length
+        res = int(''.join(map(str, bits[i:i+8])), 2)
+        b_list.append(res)
+        
+    return b_list
     
 def main():
     # code pictures here
@@ -70,6 +100,9 @@ def main():
 
     display(secret)
 
+    b_msg = decrypt(secret)
+
+    print(read_bytes(b_msg))
     
 if __name__ == "__main__":
     main()
