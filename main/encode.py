@@ -10,48 +10,66 @@ def display(image):
 def encrypt_message(message):
     return
 
-def convert_to_bytes(message):
-    return
-    
 def hide(image, b_message):
     dim = len(image.shape)
 
-    store_space = 0
-    for i in range(dim):
+    store_space = image.shape[0]
+    for i in range(1, dim):
         store_space *= image.shape[i]
 
-    b_len = len(b_message)
-    b_i = 0
-        
-    if store_space < len(b_message):
+    if store_space < len(b_message) * 8:
         raise ValueError("Image must have enough pixels to store message")
 
+    bits = []
+
+    for byte in b_message:
+        # https://blog.finxter.com/5-best-ways-to-convert-python-bytes-to-bits/
+        temp = list(map(int, bin(byte)[2:].zfill(8)))
+        bits += temp
+                
+    return bit_insert(image, bits, dim)
+
+def bit_insert(image, bits, dim):
+    mask = 0b11111110
+    b_i = 0
+
+    rtn = np.copy(image)
+    
     # Note: our implementation here will impact how we get our message out of the image
-    # TODO: try numpy slicing tricks to speed up implementation
     if dim == 3:
         # go by x, y, then color
-        for i in range(image.shape[2]):
-            for j in range(image.shape[0]):
-                for k in range(image.shape[1]):
-                    byte = b_message[b_i]
-                    
+        for color in range(image.shape[2]):
+            for x in range(image.shape[0]):
+                for y in range(image.shape[1]):
+                    pixel = image[y, x, color] & mask
+                    rtn[y, x, color] = pixel + bits[b_i]
+                    b_i += 1
+                    if b_i >= len(bits):
+                        return rtn
     else:
-        for i in range(image.shape[0]):
-            for j in range(image.shape[1]):
-        
-                
-    return rtn
-    
+        for x in range(image.shape[0]):
+            for y in range(image.shape[1]):
+                pixel = image[y, x] & mask
+                rtn[y, x] = pixel + bits[b_i]
+                b_i += 1
+                if b_i >= len(bits):
+                    return rtn
+
 def decrypt(mes_img, key_img):
     return
     
 def main():
     # code pictures here
-    image = cv2.imread('img.jpg', cv2.IMREAD_GRAYSCALE)
+    # image = cv2.imread('img.png', cv2.IMREAD_GRAYSCALE)
+    image = cv2.imread('img.png')
+    display(image)
 
     test_mess = b'hello'
     
     secret = hide(image, test_mess)
+
+    display(secret)
+
     
 if __name__ == "__main__":
     main()
