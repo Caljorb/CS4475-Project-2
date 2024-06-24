@@ -42,16 +42,16 @@ def bit_insert(image, bits, dim):
     if dim == 3:
         # go by x, y, then color
         for color in range(image.shape[2]):
-            for x in range(image.shape[0]):
-                for y in range(image.shape[1]):
+            for x in range(image.shape[1]):
+                for y in range(image.shape[0]):
                     pixel = image[y, x, color] & mask
                     rtn[y, x, color] = pixel + bits[b_i]
                     b_i += 1
                     if b_i >= len(bits):
                         return rtn
     else:
-        for x in range(image.shape[0]):
-            for y in range(image.shape[1]):
+        for x in range(image.shape[1]):
+            for y in range(image.shape[0]):
                 pixel = image[y, x] & mask
                 rtn[y, x] = pixel + bits[b_i]
                 b_i += 1
@@ -80,16 +80,16 @@ def bit_extract(image, msg_len):
     if dim == 3:
         # go by x, y, then color
         for color in range(image.shape[2]):
-            for x in range(image.shape[0]):
-                for y in range(image.shape[1]):
+            for x in range(image.shape[1]):
+                for y in range(image.shape[0]):
                     bits.append(image[y, x, color] & mask)
                     b_count += 1
                     if b_count >= msg_len*8:
                         return bits
     # grayscale
     else:
-        for x in range(image.shape[0]):
-            for y in range(image.shape[1]):
+        for x in range(image.shape[1]):
+            for y in range(image.shape[0]):
                 bits.append(image[y, x])
                 b_count += 1
                 if b_count >= msg_len*8:
@@ -98,7 +98,7 @@ def bit_extract(image, msg_len):
 def main():
     # code pictures here
     # image = cv2.imread('img.png', cv2.IMREAD_GRAYSCALE)
-    image = cv2.imread('img.png')
+    image = cv2.imread('landscape.jpg')
 
     while True:
         # test_msg = b'hello'
@@ -109,7 +109,7 @@ def main():
         f = open(test_msg, "rb")
         file = f.read()
 
-        print(file[0])
+        # print(file[0])
 
 
         # print(file)
@@ -119,10 +119,17 @@ def main():
             display(image)
             display(secret)
         
-            b_msg = decrypt(secret, len(file))
-            msg = read_bytes(b_msg)
+            b_msg = bytes(decrypt(secret, len(file)))
+            # msg = read_bytes(b_msg)
             
-            print('\n{}'.format(msg))
+            # https://www.geeksforgeeks.org/create-a-new-text-file-in-python/
+            file_path = "./parsed{}".format(filetype)
+
+            # format_msg = '{}\n'.format(msg)
+            
+            with open(file_path, 'wb') as file:
+                file.write(b_msg)
+            # print('\n{}'.format(msg))
             break
         except ValueError:
             print("\nSorry, please use a bigger image or store a smaller message.\n\n")
