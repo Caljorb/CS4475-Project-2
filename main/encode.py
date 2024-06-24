@@ -97,23 +97,25 @@ def bit_extract(image, msg_len):
 
 def user_file_hide(image):
         while True:
-            test_msg = input('Hello! Please enter file path you would like to store in the image.\n')
+            test_msg = input('Please enter the file path you would like to store in the image.\n')
 
             filetype = test_msg.split(".")[-1]
             f = open(test_msg, "rb")
             file = f.read()
             try:
-                return hide(image, file)
+                secret = hide(image, file)
+                print('Take note of your key:', len(file))
+                return secret
             except ValueError:
                 print("\nSorry, please use a bigger image or store a smaller message.\n\n")
                 continue
         
-def user_file_decrypt(secret, file):
-    b_msg = decrypt(secret, len(file))
+def user_file_decrypt(secret, key, filetype):
+    b_msg = decrypt(secret, key)
     # msg = read_bytes(b_msg)
     
     # https://www.geeksforgeeks.org/create-a-new-text-file-in-python/
-    file_path = "./parsed{}".format(filetype)
+    file_path = "./{}".format(filetype)
     
     # format_msg = '{}\n'.format(msg)
     
@@ -124,29 +126,27 @@ def user_both(image):
     while True:
         test_msg = input('Please enter file path you would like to store in the image.\n')
 
-        filetype = test_msg.split(".")[-1]
+        # filetype = test_msg.split(".")[-1]
         f = open(test_msg, "rb")
         file = f.read()
 
         try:
             secret = hide(image, file)
-
-            display(image)
-            display(secret)
         
             b_msg = bytes(decrypt(secret, len(file)))
             # msg = read_bytes(b_msg)
             
             # https://www.geeksforgeeks.org/create-a-new-text-file-in-python/
-            file_path = "./parsed{}".format(filetype)
+            file_path = "./parsed_{}".format(test_msg)
 
             # format_msg = '{}\n'.format(msg)
             
             with open(file_path, 'wb') as file:
                 file.write(b_msg)
-                
+
+            print(file_path, "saved to current directory!")
             # print('\n{}'.format(msg))
-            break
+            return secret
         except ValueError:
             print("\nSorry, please use a bigger image or store a smaller message.\n\n")
             continue
@@ -156,6 +156,7 @@ def main():
     # image = cv2.imread('img.png', cv2.IMREAD_GRAYSCALE)
 
     while True:
+        count = 0
         opt = input('''Welcome! Please select what you want to do:
         (1) Hide file in image
         (2) Fetch file from image
@@ -172,16 +173,25 @@ def main():
                 image = cv2.imread(i_path)
                 
                 secret = user_file_hide(image)
-                print('File hidden in image. New image saved in current directory!')
-                name = input('Please enter the file name: ')
-                name = '{}.png'.format(name)
+                print('File hidden in image.')
+                name = 'secret{}.png'.format(count)
+                print(name, 'saved in current directory!')
+                count += 1
                 cv2.imwrite(name, secret)
             case '2':
-                secret = input('Please enter the file path to the image to fetch from: ')
-                user_file_decrypt(secret)
+                secret_path = input('Please enter the file path to the image to fetch from: ')
+                secret = cv2.imread(secret_path)
+                
+                key = int(input('Please enter the key: '))
+
+                filetype = input('Please enter the file name: ')
+
+                user_file_decrypt(secret, key, filetype)
                 print('File saved to current directory!')
             case '3':
-                user_both(image)
+                i_path = input("Please specify the source image's path: ")
+                image = cv2.imread(i_path)
+                secret = user_both(image)
                 y = input('Would you like to compare ? (y/n)\n')
         
                 if y == 'y':
