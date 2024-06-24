@@ -89,11 +89,11 @@ def bit_extract(image, msg_len):
     else:
         for x in range(image.shape[0]):
             for y in range(image.shape[1]):
-                bits.append(image[y, x, color])
+                bits.append(image[y, x])
                 b_count += 1
                 if b_count >= msg_len*8:
                     return bits
-                
+
 def main():
     # code pictures here
     # image = cv2.imread('img.png', cv2.IMREAD_GRAYSCALE)
@@ -112,8 +112,16 @@ def main():
         
             b_msg = decrypt(secret, len(test_msg))
             msg = read_bytes(b_msg)
+
+            # https://www.geeksforgeeks.org/create-a-new-text-file-in-python/
+            file_path = "./parsed.txt"
+
+            format_msg = '{}\n'.format(msg)
             
-            print('\n{}'.format(msg))
+            with open(file_path, 'w') as file:
+                file.write(format_msg)
+            
+            # print('\n{}'.format(msg))
             break
         except ValueError:
             print("\nSorry, please use a bigger image or store a smaller message.\n\n")
