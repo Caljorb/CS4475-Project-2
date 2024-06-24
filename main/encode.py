@@ -42,16 +42,16 @@ def bit_insert(image, bits, dim):
     if dim == 3:
         # go by x, y, then color
         for color in range(image.shape[2]):
-            for x in range(image.shape[0]):
-                for y in range(image.shape[1]):
+            for x in range(image.shape[1]):
+                for y in range(image.shape[0]):
                     pixel = image[y, x, color] & mask
                     rtn[y, x, color] = pixel + bits[b_i]
                     b_i += 1
                     if b_i >= len(bits):
                         return rtn
     else:
-        for x in range(image.shape[0]):
-            for y in range(image.shape[1]):
+        for x in range(image.shape[1]):
+            for y in range(image.shape[0]):
                 pixel = image[y, x] & mask
                 rtn[y, x] = pixel + bits[b_i]
                 b_i += 1
@@ -67,7 +67,7 @@ def decrypt(image, msg_len):
         res = int(''.join(map(str, bits[i:i+8])), 2)
         b_list.append(res)
 
-    return b_list
+    return bytes(b_list)
 
 def bit_extract(image, msg_len):
     dim = len(image.shape)
@@ -80,44 +80,127 @@ def bit_extract(image, msg_len):
     if dim == 3:
         # go by x, y, then color
         for color in range(image.shape[2]):
-            for x in range(image.shape[0]):
-                for y in range(image.shape[1]):
+            for x in range(image.shape[1]):
+                for y in range(image.shape[0]):
                     bits.append(image[y, x, color] & mask)
                     b_count += 1
                     if b_count >= msg_len*8:
                         return bits
+    # grayscale
     else:
-        for x in range(image.shape[0]):
-            for y in range(image.shape[1]):
-                bits.append(image[y, x, color])
+        for x in range(image.shape[1]):
+            for y in range(image.shape[0]):
+                bits.append(image[y, x])
                 b_count += 1
                 if b_count >= msg_len*8:
                     return bits
-                
-def main():
-    # code pictures here
-    # image = cv2.imread('img.png', cv2.IMREAD_GRAYSCALE)
-    image = cv2.imread('img.png')
 
+def user_file_hide(image):
+        while True:
+            test_msg = input('Please enter the file path you would like to store in the image.\n')
+
+            filetype = test_msg.split(".")[-1]
+            f = open(test_msg, "rb")
+            file = f.read()
+            try:
+                secret = hide(image, file)
+                print('Take note of your key:', len(file))
+                return secret
+            except ValueError:
+                print("\nSorry, please use a bigger image or store a smaller message.\n\n")
+                continue
+        
+def user_file_decrypt(secret, key, filetype):
+    b_msg = decrypt(secret, key)
+    # msg = read_bytes(b_msg)
+    
+    # https://www.geeksforgeeks.org/create-a-new-text-file-in-python/
+    file_path = "./{}".format(filetype)
+    
+    # format_msg = '{}\n'.format(msg)
+    
+    with open(file_path, 'wb') as file:
+        file.write(b_msg)
+
+def user_both(image):
     while True:
-        # test_msg = b'hello'
+        test_msg = input('Please enter file path you would like to store in the image.\n')
 
-        test_msg = input('Hello! Please enter data you would like to store in the image.\n').encode()
+        # filetype = test_msg.split(".")[-1]
+        f = open(test_msg, "rb")
+        file = f.read()
 
         try:
-            secret = hide(image, test_msg)
-
-            display(image)
-            display(secret)
+            secret = hide(image, file)
         
-            b_msg = decrypt(secret, len(test_msg))
-            msg = read_bytes(b_msg)
+            b_msg = bytes(decrypt(secret, len(file)))
+            # msg = read_bytes(b_msg)
             
-            print('\n{}'.format(msg))
-            break
+            # https://www.geeksforgeeks.org/create-a-new-text-file-in-python/
+            file_path = "./parsed_{}".format(test_msg)
+
+            # format_msg = '{}\n'.format(msg)
+            
+            with open(file_path, 'wb') as file:
+                file.write(b_msg)
+
+            print(file_path, "saved to current directory!")
+            # print('\n{}'.format(msg))
+            return secret
         except ValueError:
             print("\nSorry, please use a bigger image or store a smaller message.\n\n")
             continue
-            
+        
+def main():
+    # code pictures here
+    # image = cv2.imread('img.png', cv2.IMREAD_GRAYSCALE)
+
+    while True:
+        count = 0
+        opt = input('''Welcome! Please select what you want to do:
+        (1) Hide file in image
+        (2) Fetch file from image
+        (3) Hide and fetch file
+        (4) Quit
+        ''')
+
+        image = None
+        secret = None
+        
+        match opt:
+            case '1':
+                i_path = input("Please specify the source image's path: ")
+                image = cv2.imread(i_path)
+                
+                secret = user_file_hide(image)
+                print('File hidden in image.')
+                name = 'secret{}.png'.format(count)
+                print(name, 'saved in current directory!')
+                count += 1
+                cv2.imwrite(name, secret)
+            case '2':
+                secret_path = input('Please enter the file path to the image to fetch from: ')
+                secret = cv2.imread(secret_path)
+                
+                key = int(input('Please enter the key: '))
+
+                filetype = input('Please enter the file name: ')
+
+                user_file_decrypt(secret, key, filetype)
+                print('File saved to current directory!')
+            case '3':
+                i_path = input("Please specify the source image's path: ")
+                image = cv2.imread(i_path)
+                secret = user_both(image)
+                y = input('Would you like to compare ? (y/n)\n')
+        
+                if y == 'y':
+                    display(image)
+                    display(secret)
+            case '4':
+                return
+            case _:
+                continue
+        
 if __name__ == "__main__":
     main()
