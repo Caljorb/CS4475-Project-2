@@ -86,10 +86,11 @@ def bit_extract(image, msg_len):
                     b_count += 1
                     if b_count >= msg_len*8:
                         return bits
+    # grayscale
     else:
         for x in range(image.shape[0]):
             for y in range(image.shape[1]):
-                bits.append(image[y, x, color])
+                bits.append(image[y, x])
                 b_count += 1
                 if b_count >= msg_len*8:
                     return bits
@@ -102,15 +103,23 @@ def main():
     while True:
         # test_msg = b'hello'
 
-        test_msg = input('Hello! Please enter data you would like to store in the image.\n').encode()
+        test_msg = input('Hello! Please enter file path you would like to store in the image.\n')
 
+        filetype = test_msg.split(".")[-1]
+        f = open(test_msg, "rb")
+        file = f.read()
+
+        print(file[0])
+
+
+        # print(file)
         try:
-            secret = hide(image, test_msg)
+            secret = hide(image, file)
 
             display(image)
             display(secret)
         
-            b_msg = decrypt(secret, len(test_msg))
+            b_msg = decrypt(secret, len(file))
             msg = read_bytes(b_msg)
             
             print('\n{}'.format(msg))
