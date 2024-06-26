@@ -14,6 +14,10 @@ def read_bytes(b_msg):
 
     return rtn
 
+def encrypt_int(integer):
+    private_key = 15723480
+    return integer ^ private_key
+
 def hide(image, b_message):
     dim = len(image.shape)
 
@@ -104,7 +108,7 @@ def user_file_hide(image):
             file = f.read()
             try:
                 secret = hide(image, file)
-                print('Take note of your key:', len(file))
+                print('Take note of your key:', encrypt_int(len(file)))
                 return secret
             except ValueError:
                 print("\nSorry, please use a bigger image or store a smaller message.\n\n")
@@ -184,9 +188,9 @@ def main():
                 
                 key = int(input('Please enter the key: '))
 
-                filetype = input('Please enter the file name: ')
+                filetype = input('Please enter the file name to store result: ')
 
-                user_file_decrypt(secret, key, filetype)
+                user_file_decrypt(secret, encrypt_int(key), filetype)
                 print('File saved to current directory!')
             case '3':
                 i_path = input("Please specify the source image's path: ")
