@@ -11,8 +11,9 @@
         position: fixed;
         bottom: 0;
         left: 0;
-        margin: 10px;
-        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        margin-bottom: .5%;
+        margin-left: .5%;
+        font-family: hackerFont, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
         font-size: medium;
         color: rgb(12, 234, 49);
     }
@@ -27,10 +28,28 @@
     .motivation {
         font-family: hackerFont;
         color: rgb(12, 234, 49);
+        margin-left: 5%;
+        margin-right: 5%;
+        font-size: 20px;
     }
     .examples {
-        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        font-family: hackerFont, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
         color: rgb(12, 234, 49);
+    }
+    .example-title {
+        font-family: hackerFont, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        color: rgb(12, 234, 49);
+        text-align: center;
+        margin-top: 5%;
+    }
+    .example-desc {
+        font-family: hackerFont, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        color: rgb(12, 234, 49);
+        margin-bottom: 5%;
+        text-align: center;
+        font-size: 20px;
+        margin-left: 5%;
+        margin-right: 5%;
     }
 </style>
 
@@ -39,41 +58,51 @@
         Encoding and Decrypting Messages Within Images
     </h1>
     <p class = "motivation">
-        When thinking of creating our second computational photography artifact, we were particularly interested in steganography. Moving with this idea, our final project encodes 
-        a message of user choice within an image undetectable to the eye, then decrypts the message to be displayed back to the user as read. 
+      When thinking of creating our second computational photography artifact, we were particularly interested in image steganography, the process of hiding information within an image.
+      Moving with this idea, our final project encodes a file of user choice within an image undetectable to the eye, then decrypts the message to be displayed back to the user as read. 
     </p>
     <div class="examples">
+      <h1 class="example-title">
+        Hiding an executable in an image
+      </h1>
         <div style="text-align: center; margin-bottom: 20px;">
             <div style="display: inline-block; margin: 10px; text-align: center;">
-                <img src="/Users/thomasdean/Documents/GitHub/CS4475-Project-2/main/html/output/helloRS_source.png" alt="helloRS_source" style="width: 300px; height: auto;">
-                <figcaption style="color: rgb(12, 234, 49);"> **input caption** </figcaption>
+                <img src="./output/helloRS_source.png" alt="helloRS_source" style="width: 300px; height: auto;">
+                <figcaption style="color: rgb(12, 234, 49);"> Source code for Hello World in Rust </figcaption>
             </div>
             <div style="display: inline-block; margin: 10px; text-align: center;">
-                <img src="/Users/thomasdean/Documents/GitHub/CS4475-Project-2/main/html/output/helloRS_out.png" alt="helloRS_out" style="width: 300px; height: auto;">
-                <figcaption style="color: rgb(12, 234, 49);"> **input caption** </figcaption>
+                <img src="./output/helloRS_out.png" alt="helloRS_out" style="width: 300px; height: auto;">
+                <figcaption style="color: rgb(12, 234, 49);"> Compiled binary output </figcaption>
             </div>
             <div style="display: inline-block; margin: 10px; text-align: center;">
-                <img src="/Users/thomasdean/Documents/GitHub/CS4475-Project-2/main/html/output/encode_out.png" alt="encode_out" style="width: 300px; height: auto;">
-                <figcaption style="color: rgb(12, 234, 49);"> **input caption** </figcaption>
+                <img src="./output/encode_out.png" alt="encode_out" style="width: 300px; height: auto;">
+                <figcaption style="color: rgb(12, 234, 49);"> Process of hiding and extracting the binary from the source image </figcaption>
             </div>
         </div>
         <div style="text-align: center; margin-bottom: 20px;">
             <div style="display: inline-block; margin: 10px; text-align: center;">
-                <img src="/Users/thomasdean/Documents/GitHub/CS4475-Project-2/main/html/output/toledo.jpg" alt="toledo" style="width: 300px; height: auto;">
-                <figcaption style="color: rgb(12, 234, 49);"> **input caption** </figcaption>
+                <img src="./output/toledo.jpg" alt="toledo" style="width: 300px; height: auto;">
+                <figcaption style="color: rgb(12, 234, 49);"> Source image </figcaption>
             </div>
             <div style="display: inline-block; margin: 10px; text-align: center;">
-                <img src="/Users/thomasdean/Documents/GitHub/CS4475-Project-2/main/html/output/secretHelloRS.png" alt="secretHelloRS" style="width: 300px; height: auto;">
-                <figcaption style="color: rgb(12, 234, 49);"> **input caption** </figcaption>
+                <img src="./output/secretHelloRS.png" alt="secretHelloRS" style="width: 300px; height: auto;">
+                <figcaption style="color: rgb(12, 234, 49);"> Image with hidden binary </figcaption>
             </div>
         </div>
     </div>
-    <div class="final_example" style="text-align: center;">
-        <div style="display: inline-block; margin: 10px; text-align: center;">
-            <img src="/Users/thomasdean/Documents/GitHub/CS4475-Project-2/main/html/output/parsed_helloRS_out.png" alt="parsed_helloRS_out" style="width: 300px; height: auto;">
-            <figcaption style="color: rgb(12, 234, 49);"> **input caption** </figcaption>
+    <div class="examples" style="text-align: center;">
+        <div style="display: inline-block; margin: 6px; text-align: center;">
+            <img src="./output/parsed_helloRS_out.png" alt="parsed_helloRS_out" style="width: 300px; height: auto;">
+            <figcaption style="color: rgb(12, 234, 49);"> Extracted binary output </figcaption>
         </div>
     </div>
+
+    <p class="example-desc">
+      Comparing the original image with the modified one, it is clear the sky has a different shade of blue, indicating something is wrong; however, if presented only with the modified image,
+      it is hard to tell the image has a hidden executable within it. This example did not encrypt the binary before hiding it in the image, meaning it is easy to create a program that can
+      detect it, but encryption would avoid this possibility. In terms of real world use, this presents how malware can evade detection by antivirus software by embedding itself in images that appear
+      benign.
+    </p>
 
     <p class = "names">
         Designed by Caleb Jones, Thomas Dean, Annarose Hilhorst, and Noah Flanagan
