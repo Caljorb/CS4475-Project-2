@@ -51,6 +51,10 @@
         margin-left: 5%;
         margin-right: 5%;
     }
+    .firstEx {
+        font-family: hackerFont, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        color: rgb(12, 234, 49);
+    }
 </style>
 
 <body class = "body">
@@ -61,6 +65,19 @@
       When thinking of creating our second computational photography artifact, we were particularly interested in image steganography, the process of hiding information within an image.
       Moving with this idea, our final project encodes a file of user choice within an image undetectable to the eye, then decrypts the message to be displayed back to the user as read. 
     </p>
+    <div class="firstEx">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div style="display: inline-block; margin: 10px; text-align: center;">
+                <img src="./output/secretHelloRS.png" alt="stegHidden" style="width: 300px; height: 250px;">
+                <figcaption style="color: rgb(12, 234, 49);"> Is there anything hidden in this image? </figcaption>
+            </div>
+            <div style="display: inline-block; margin: 10px; text-align: center;">
+                <img src="./output/steg.JPG" alt="stegUnhidden" style="width: 300px; height: 250px;">
+                <figcaption style="color: rgb(12, 234, 49);"> Yes, this stegosaurus! </figcaption>
+            </div>
+        </div>
+    </div>
+
     <div class="examples">
       <h1 class="example-title">
         Hiding an executable in an image
