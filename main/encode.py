@@ -159,8 +159,9 @@ def main():
     # code pictures here
     # image = cv2.imread('img.png', cv2.IMREAD_GRAYSCALE)
 
+    count = 0
+    
     while True:
-        count = 0
         opt = input('''Welcome! Please select what you want to do:
         (1) Hide file in image
         (2) Fetch file from image
